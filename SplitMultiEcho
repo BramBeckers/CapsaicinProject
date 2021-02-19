@@ -1,0 +1,48 @@
+%Script for splitting concatenated multi-echo files
+% Author: Patrick Dupont, KU Leuven
+
+%P  = spm_select(1,'IMAGE',{'Select image'});
+% = '';  %% specify path to concatenated input file
+
+% newfilename1 = ''; specify filename for 4D ET1 file
+% newfilename2 = ''; specify filename for 4D ET2 file
+% newfilename3 = ''; specify filename for 4D ET3 file
+%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+clear Vout1 Vout2 Vout3
+[pth,name,ext,num] = spm_fileparts(P);
+%filename = fullfile(pth,[name ext]);
+
+V = spm_vol(fullfile(pth,[name ext]));
+nr_images = size(V,1);
+
+% subdivide the data volumes
+indexlist1 = [1:3:nr_images];
+indexlist2 = [2:3:nr_images];
+indexlist3 = [3:3:nr_images];
+
+% define outputfilenames
+outputfilename1 = fullfile(pth,newfilename1);
+outputfilename2 = fullfile(pth,newfilename2);
+outputfilename3 = fullfile(pth,newfilename3);
+
+for i = 1:length(indexlist1)
+    img = spm_read_vols(V(indexlist1(i),1));
+    Vout1(i)   = V(indexlist1(i),1);
+    Vout1(i).fname = outputfilename1;
+    Vout1(i).n = [i 1];
+    spm_write_vol(Vout1(i),img);       
+end
+for i = 1:length(indexlist2)
+    img = spm_read_vols(V(indexlist2(i),1));
+    Vout2(i)   = V(indexlist2(i),1);
+    Vout2(i).fname = outputfilename2;
+    Vout2(i).n = [i 1];
+    spm_write_vol(Vout2(i),img);       
+end
+for i = 1:length(indexlist3)
+    img = spm_read_vols(V(indexlist3(i),1));
+    Vout3(i)   = V(indexlist3(i),1);
+    Vout3(i).fname = outputfilename3;
+    Vout3(i).n = [i 1];
+    spm_write_vol(Vout3(i),img);       
+end
